@@ -98,11 +98,11 @@ class Event(BaseModel):
         default="python_SDK", max_length=255, description="Default. Event source"
     )
     datetime: str = Field(
-        default=datetime.now().isoformat(),
+        default_factory=lambda: datetime.now().isoformat(),
         description="Default. Event timestamp in ISO 8601 format",
     )
     session_id: int = Field(
-        default=int(datetime.now().timestamp() * 1000),
+        default_factory=lambda: int(datetime.now().timestamp() * 1000),
         description="Default. Session ID",
     )
 

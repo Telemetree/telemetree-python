@@ -51,11 +51,12 @@ class HttpClient:
 
         return response_json
 
-    def post(self, data: EncryptedEvent):
+    def post(self, data: EncryptedEvent, url: str):
         """
         Sends a POST request to the specified URL with the given data and headers.
 
         Args:
+            url: The URL to send the event request to.
             data (EncryptedEvent): The data to be sent in the request body.
 
         Returns:
@@ -68,18 +69,15 @@ class HttpClient:
         """
         try:
             headers = {
+                "Accept": "application/json",
                 "Content-Type": "application/json",
                 "x-api-key": self.api_key,
                 "x-project-id": self.project_id,
             }
 
-            data = data.model_dump_json()
-
-            request = requests.post(
-                self.url, json=data, headers=headers, timeout=HTTP_TIMEOUT
-            )
-            request.raise_for_status()
-            return request.json()
+            response = requests.post(url, json=data.model_dump(), headers=headers, timeout=HTTP_TIMEOUT)
+            response.raise_for_status()
+            return response.json()
         except (
             requests.exceptions.HTTPError,
             requests.exceptions.RequestException,
