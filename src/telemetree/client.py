@@ -1,3 +1,4 @@
+import base64
 import json
 import logging
 from typing import Optional, Union
@@ -8,7 +9,6 @@ from telemetree.config import Config
 from telemetree.http_client import HttpClient
 from telemetree.schemas import EncryptedEvent, Event
 from telemetree.encryption import EncryptionService
-from telemetree.event_builder import EventBuilder
 from telemetree.utils import validate_uuid
 
 
@@ -64,7 +64,6 @@ class Telemetree:
             raise ValueError("Invalid type: expected Event type or dictionary")
         if isinstance(event, dict):
             try:
-                event["application_id"] = self.application_id
                 event = Event(**event)
             except ValidationError as e:
                 logger.error("Invalid event: %s", e)
@@ -72,5 +71,10 @@ class Telemetree:
 
         stringified_event = event.model_dump_json()
         encrypted_event = self.encryption_service.encrypt(stringified_event)
+        encrypted_event = EncryptedEvent(
+            key=encrypted_event["key"].decode("utf-8"),
+            iv=encrypted_event["iv"].decode("utf-8"),
+            body=encrypted_event["body"].decode("utf-8"),
+        )
 
-        return self.http_client.post(encrypted_event)
+        return self.http_client.post(encrypted_event, self.host)
