@@ -1,3 +1,23 @@
+## 0.3.0 (2025-03-05)
+
+### Feat
+
+- **revamped-python-library**: we re-wroted the python library -- made it easy to use it with backend services
+
+## 0.2.0 (2024-07-10)
+
+### Feat
+
+- **client.py,-config.py,-orchestrator.py**: new event transformation orchestrator
+
+### Fix
+
+- **config.py**: added tracked_messages and app_name
+
+### Refactor
+
+- **telemetree-folder**: fixed imports
+
 ## 0.1.6 (2024-03-12)
 
 ### Fix
