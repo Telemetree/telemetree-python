@@ -1,5 +1,7 @@
 ![](https://tc-images-api.s3.eu-central-1.amazonaws.com/gif_cropped.gif)
+
 # Telegram Mini App analytics SDK for Python
+
 [![PyPi license](https://badgen.net/pypi/license/pip/)](https://pypi.org/project/pip/)
 [![PyPI pyversions](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue)](https://test.pypi.org/project/telemetree/0.1.1/)
 
@@ -42,7 +44,9 @@ client = TelemetreeClient(api_key, project_id)
 3. Connect the client to your webhook, or pass the event data directly:
 
 ```python
-event = {
+# Option 1: Pass raw Telegram webhook data directly
+# The SDK will automatically detect and transform Telegram webhook data
+webhook_data = {
     "update_id": 123456789,
     "message": {
         "message_id": 1,
@@ -66,8 +70,45 @@ event = {
     }
 }
 
-response_status_code = client.track(event)
+response_status_code = client.track(webhook_data)
 print(response_status_code)
+
+# Option 2: Pass a pre-formatted event
+custom_event = {
+    "event_type": "custom_event",
+    "telegram_id": 987654321,
+    "username": "johndoe",
+    "firstname": "John",
+    "lastname": "Doe"
+}
+
+response_status_code = client.track(custom_event)
+print(response_status_code)
+```
+
+### Automatic Telegram Webhook Handling
+
+The Telemetree SDK automatically detects and transforms Telegram webhook data into the required format. When you pass a raw Telegram webhook payload to the `track` method, the SDK will:
+
+1. Detect that it's a Telegram webhook based on the presence of the `update_id` field and other Telegram-specific fields
+2. Extract the user ID and other user information from the appropriate location in the webhook data
+3. Transform the data into the format required by Telemetree
+4. Track the event with the appropriate event type (e.g., `telegram_message`, `telegram_callback_query`, etc.)
+
+This means you can directly pass the webhook data from your Telegram bot to Telemetree without any manual transformation:
+
+```python
+@app.route("/webhook", methods=["POST"])
+async def telegram_webhook():
+    data = await request.json()
+
+    # Pass the raw webhook data directly to Telemetree
+    telemetree_client.track(data)
+
+    # Process the webhook data for your bot
+    # ...
+
+    return {"status": "ok"}
 ```
 
 ### Configuration

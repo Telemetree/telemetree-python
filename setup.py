@@ -22,7 +22,7 @@ def get_version():
 
 setup(
     name="telemetree",
-    version=get_version(),
+    version="0.4.0",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[

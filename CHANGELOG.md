@@ -1,3 +1,13 @@
+## 0.4.0 (2025-04-21)
+
+### Feat
+
+- **client.py**: Added automatic Telegram webhook detection and transformation
+  - The SDK now automatically detects when a raw Telegram webhook payload is passed to the `track` method
+  - Automatically extracts user information and transforms the data into the required Telemetree format
+  - Supports all Telegram update types (messages, callback queries, inline queries, etc.)
+  - Improves developer experience by eliminating the need for manual data transformation
+
 ## 0.3.0 (2025-03-05)
 
 ### Feat
